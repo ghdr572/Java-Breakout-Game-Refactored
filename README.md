@@ -10,7 +10,7 @@ This is an academic project aimed at refactoring the classic Breakout game by ap
 
 ## Credits & Acknowledgments
 - **Original Source Code:** ZetCode Java Breakout Game Tutorial.
-- **Refactoring & Design Patterns:** Academic assignment for Software Engineering course.
-- 
+- **Refactoring & Design Patterns:** Academic assignment for Software Design Patterns course.
+
 ![Breakout game screenshot](breakout_game.png)
 
