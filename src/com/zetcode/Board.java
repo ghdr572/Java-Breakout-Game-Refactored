@@ -24,6 +24,8 @@ public class Board extends JPanel {
     private Paddle paddle;
     private Brick[] bricks;
     private boolean inGame = true;
+    // Factory used to create game objects
+    private final GameObjectFactory factory = new GameObjectFactory();
 
     public Board() {
 
@@ -47,8 +49,8 @@ public class Board extends JPanel {
         // استخدام عدد الطوب والـ Period من الـ Singleton
         bricks = new Brick[GameConfig.getInstance().getNumberOfBricks()];
 
-        ball = new Ball();
-        paddle = new Paddle();
+        ball = (Ball) factory.createGameObject("BALL", 0, 0);
+        paddle = (Paddle) factory.createGameObject("PADDLE", 0, 0);
 
         int k = 0;
 
@@ -56,7 +58,11 @@ public class Board extends JPanel {
 
             for (int j = 0; j < 6; j++) {
 
-                bricks[k] = new Brick(j * 40 + 30, i * 10 + 50);
+                bricks[k] = (Brick) factory.createGameObject(
+                   "BRICK",
+                   j * 40 + 30,
+                   i * 10 + 50
+                );
                 k++;
             }
         }
