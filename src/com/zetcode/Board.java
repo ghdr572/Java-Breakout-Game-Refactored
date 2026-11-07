@@ -8,7 +8,6 @@ import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Point;
 import java.awt.RenderingHints;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
@@ -19,13 +18,14 @@ import java.awt.event.KeyEvent;
 public class Board extends JPanel {
 
     private Timer timer;
-    private String message = "Game Over";
     private Ball ball;
     private Paddle paddle;
     private Brick[] bricks;
     private boolean inGame = true;
     // Factory used to create game objects
     private final GameObjectFactory factory = new GameObjectFactory();
+    // Facade used to coordinate game cycle logic and collisions
+    private GameControllerFacade controller;
 
     public Board() {
 
@@ -66,6 +66,9 @@ public class Board extends JPanel {
                 k++;
             }
         }
+
+        // Initialize Facade with game entities
+        controller = new GameControllerFacade(ball, paddle, bricks);
 
         timer = new Timer(GameConfig.getInstance().getPeriod(), new GameCycle());
         timer.start();
@@ -116,6 +119,7 @@ public class Board extends JPanel {
 
         var font = new Font("Verdana", Font.BOLD, 18);
         FontMetrics fontMetrics = this.getFontMetrics(font);
+        String message = controller.getStatusMessage();
 
         g2d.setColor(Color.BLACK);
         g2d.setFont(font);
@@ -150,9 +154,10 @@ public class Board extends JPanel {
 
     private void doGameCycle() {
 
-        ball.move();
-        paddle.move();
-        checkCollision();
+        controller.updateMotion();
+        if (!controller.checkCollisions()) {
+            stopGame();
+        }
         repaint();
     }
 
@@ -160,105 +165,5 @@ public class Board extends JPanel {
 
         inGame = false;
         timer.stop();
-    }
-
-    private void checkCollision() {
-        // استخدام القاع السفلي من الـ Singleton
-        if (ball.getRect().getMaxY() > GameConfig.getInstance().getBottomEdge()) {
-
-            stopGame();
-        }
-
-        for (int i = 0, j = 0; i < GameConfig.getInstance().getNumberOfBricks(); i++) {
-
-            if (bricks[i].isDestroyed()) {
-
-                j++;
-            }
-
-            if (j == GameConfig.getInstance().getNumberOfBricks()) {
-
-                message = "Victory";
-                stopGame();
-            }
-        }
-
-        if ((ball.getRect()).intersects(paddle.getRect())) {
-
-            int paddleLPos = (int) paddle.getRect().getMinX();
-            int ballLPos = (int) ball.getRect().getMinX();
-
-            int first = paddleLPos + 8;
-            int second = paddleLPos + 16;
-            int third = paddleLPos + 24;
-            int fourth = paddleLPos + 32;
-
-            if (ballLPos < first) {
-
-                ball.setXDir(-1);
-                ball.setYDir(-1);
-            }
-
-            if (ballLPos >= first && ballLPos < second) {
-
-                ball.setXDir(-1);
-                ball.setYDir(-1 * ball.getYDir());
-            }
-
-            if (ballLPos >= second && ballLPos < third) {
-
-                ball.setXDir(0);
-                ball.setYDir(-1);
-            }
-
-            if (ballLPos >= third && ballLPos < fourth) {
-
-                ball.setXDir(1);
-                ball.setYDir(-1 * ball.getYDir());
-            }
-
-            if (ballLPos > fourth) {
-
-                ball.setXDir(1);
-                ball.setYDir(-1);
-            }
-        }
-
-        for (int i = 0; i < GameConfig.getInstance().getNumberOfBricks(); i++) {
-
-            if ((ball.getRect()).intersects(bricks[i].getRect())) {
-
-                int ballLeft = (int) ball.getRect().getMinX();
-                int ballHeight = (int) ball.getRect().getHeight();
-                int ballWidth = (int) ball.getRect().getWidth();
-                int ballTop = (int) ball.getRect().getMinY();
-
-                var pointRight = new Point(ballLeft + ballWidth + 1, ballTop);
-                var pointLeft = new Point(ballLeft - 1, ballTop);
-                var pointTop = new Point(ballLeft, ballTop - 1);
-                var pointBottom = new Point(ballLeft, ballTop + ballHeight + 1);
-
-                if (!bricks[i].isDestroyed()) {
-
-                    if (bricks[i].getRect().contains(pointRight)) {
-
-                        ball.setXDir(-1);
-                    } else if (bricks[i].getRect().contains(pointLeft)) {
-
-                        ball.setXDir(1);
-                    }
-
-                    if (bricks[i].getRect().contains(pointTop)) {
-
-                        ball.setYDir(1);
-                    } else if (bricks[i].getRect().contains(pointBottom)) {
-
-                        ball.setYDir(-1);
-                    }
-
-                    bricks[i].setDestroyed(true);
-                }
-            }
-        }
     }
 }

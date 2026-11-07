@@ -1,7 +1,6 @@
 package com.zetcode;
 
 import java.awt.event.KeyEvent;
-import javax.swing.ImageIcon;
 
 public class Paddle extends Sprite  {
 
@@ -21,9 +20,8 @@ public class Paddle extends Sprite  {
     }
     
     private void loadImage() {
-        
-        var ii = new ImageIcon("src/resources/paddle.png");
-        image = ii.getImage();        
+        // Flyweight: get the shared image instead of loading a new copy
+        image = ImageFactory.getImage("src/resources/paddle.png");        
     }    
 
    void move() {

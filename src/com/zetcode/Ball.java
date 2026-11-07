@@ -1,7 +1,5 @@
 package com.zetcode;
 
-import javax.swing.ImageIcon;
-
 public class Ball extends Sprite {
 
     private int xdir;
@@ -23,9 +21,8 @@ public class Ball extends Sprite {
     }
 
     private void loadImage() {
-
-        var ii = new ImageIcon("src/resources/ball.png");
-        image = ii.getImage();
+        // Flyweight: get the shared image instead of loading a new copy
+        image = ImageFactory.getImage("src/resources/ball.png");
     }
 
    void move() {
