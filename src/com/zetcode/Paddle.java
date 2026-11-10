@@ -21,7 +21,7 @@ public class Paddle extends Sprite  {
     
     private void loadImage() {
         // Flyweight: get the shared image instead of loading a new copy
-        image = ImageFactory.getImage("src/resources/paddle.png");        
+       image = ImageFactory.getImage("Java-Breakout-Game-Refactored-main/src/resources/paddle.png");        
     }    
 
    void move() {

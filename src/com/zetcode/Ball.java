@@ -22,7 +22,7 @@ public class Ball extends Sprite {
 
     private void loadImage() {
         // Flyweight: get the shared image instead of loading a new copy
-        image = ImageFactory.getImage("src/resources/ball.png");
+       image = ImageFactory.getImage("Java-Breakout-Game-Refactored-main/src/resources/ball.png");
     }
 
    void move() {

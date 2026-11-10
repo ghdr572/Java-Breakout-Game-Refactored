@@ -22,7 +22,7 @@ public class Brick extends Sprite {
     
     private void loadImage() {
         // Flyweight: get the shared image instead of loading a new copy
-        image = ImageFactory.getImage("src/resources/brick.png");        
+       image = ImageFactory.getImage("Java-Breakout-Game-Refactored-main/src/resources/brick.png");
     }
 
     boolean isDestroyed() {

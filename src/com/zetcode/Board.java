@@ -22,8 +22,6 @@ public class Board extends JPanel {
     private Paddle paddle;
     private Brick[] bricks;
     private boolean inGame = true;
-    // Factory used to create game objects
-    private final GameObjectFactory factory = new GameObjectFactory();
     // Facade used to coordinate game cycle logic and collisions
     private GameControllerFacade controller;
 
@@ -49,8 +47,8 @@ public class Board extends JPanel {
         // استخدام عدد الطوب والـ Period من الـ Singleton
         bricks = new Brick[GameConfig.getInstance().getNumberOfBricks()];
 
-        ball = (Ball) factory.createGameObject("BALL", 0, 0);
-        paddle = (Paddle) factory.createGameObject("PADDLE", 0, 0);
+        ball = (Ball) createGameObject("BALL", 0, 0);
+        paddle = (Paddle) createGameObject("PADDLE", 0, 0);
 
         int k = 0;
 
@@ -58,7 +56,7 @@ public class Board extends JPanel {
 
             for (int j = 0; j < 6; j++) {
 
-                bricks[k] = (Brick) factory.createGameObject(
+                bricks[k] = (Brick) createGameObject(
                    "BRICK",
                    j * 40 + 30,
                    i * 10 + 50
@@ -72,6 +70,23 @@ public class Board extends JPanel {
 
         timer = new Timer(GameConfig.getInstance().getPeriod(), new GameCycle());
         timer.start();
+    }
+
+    // Factory Method: Board creates its game objects through this method
+    // instead of calling "new" directly in gameInit()
+    protected Sprite createGameObject(String type, int x, int y) {
+
+        if (type.equalsIgnoreCase("BALL")) {
+            return new Ball();
+
+        } else if (type.equalsIgnoreCase("PADDLE")) {
+            return new Paddle();
+
+        } else if (type.equalsIgnoreCase("BRICK")) {
+            return new Brick(x, y);
+        }
+
+        return null;
     }
 
     @Override
