@@ -140,7 +140,7 @@ public class Board extends JPanel {
         g2d.setFont(font);
         g2d.drawString(message,
                 (GameConfig.getInstance().getWidth() - fontMetrics.stringWidth(message)) / 2,
-                GameConfig.getInstance().getWidth() / 2);
+                GameConfig.getInstance().getHeight() / 2);
     }
 
     private class TAdapter extends KeyAdapter {
